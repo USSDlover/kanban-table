@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {ITask} from '@data/interfaces';
-import {TodosService} from '@data/services/todos.service';
+import {TasksService} from '@data/services/tasks.service';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -14,7 +14,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
   public done: ITask[] = [];
   private tasksSub: Subscription;
 
-  constructor(private service: TodosService) {
+  constructor(private service: TasksService) {
   }
 
   public ngOnDestroy(): void {
@@ -28,7 +28,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
   }
 
   private getTasks(): void {
-    this.tasksSub = this.service.fetchTodos()
+    this.tasksSub = this.service.fetchTasks()
       .subscribe({
         next: (res) => {
           for (const task of res) {

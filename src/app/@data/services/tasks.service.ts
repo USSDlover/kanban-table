@@ -3,13 +3,26 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {ITask} from '@data/interfaces';
+import {Store} from '@ngrx/store';
+import {fetch, search} from '@data/store/actions/tasks.actions';
 
 @Injectable()
-export class TodosService {
-  constructor(private http: HttpClient) {
+export class TasksService {
+  constructor(
+    private http: HttpClient,
+    private store: Store
+  ) {
   }
 
-  fetchTodos(): Observable<ITask[]> {
+  searchForTask(terms: string): void {
+    this.store.dispatch(search({ terms }));
+  }
+
+  fetchTasksFromStore(): void {
+    this.store.dispatch(fetch());
+  }
+
+  fetchTasks(): Observable<ITask[]> {
     return this.http
       .get<Array<ITask>>
       ('https://jsonplaceholder.typicode.com/todos')
@@ -20,7 +33,7 @@ export class TodosService {
       );
   }
 
-  fetchTodoById(id: number): Observable<ITask> {
+  findTaskById(id: number): Observable<ITask> {
     return this.http
       .get<{ json: () => any }>
       (`https://jsonplaceholder.typicode.com/todos/${id}`)

@@ -4,7 +4,7 @@ import { KanbanComponent } from './kanban.component';
 import {Observable, of} from 'rxjs';
 import {ITask} from '@data/interfaces';
 import {Task} from '@data/models/task';
-import {TodosService} from '@data/services/todos.service';
+import {TasksService} from '@data/services/todos.service';
 import {SharedModule} from '@shared/shared.module';
 
 class MockTodoService {
@@ -19,7 +19,7 @@ describe('KanbanComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [{provide: TodosService, useClass: MockTodoService}],
+      providers: [{provide: TasksService, useClass: MockTodoService}],
       declarations: [ KanbanComponent ],
       imports: [ SharedModule ]
     })
