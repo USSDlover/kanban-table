@@ -1,6 +1,6 @@
 {
   "name": "kanban-table",
-  "version": "0.3.24",
+  "version": "0.3.29",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

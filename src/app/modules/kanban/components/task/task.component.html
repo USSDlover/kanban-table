@@ -1,4 +1,4 @@
-<mat-card class="item" (dblclick)="edit.emit(task)">
+<mat-card *ngIf="task" class="item" (dblclick)="edit.emit(task)">
   <h2>{{ task.title | titlecase }}</h2>
   <p>
     {{ task.completed ? 'Completed' : 'TODO' }}
