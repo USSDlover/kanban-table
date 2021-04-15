@@ -1,0 +1,52 @@
+<mat-toolbar color="primary">
+  <mat-icon>local_fire_department</mat-icon>
+  <span>Kanban Fire</span>
+</mat-toolbar>
+<div class="content-wrapper">
+  <div class="container-wrapper">
+    <div class="container">
+      <h2>Backlog</h2>
+
+      <mat-card
+        cdkDropList
+        id="todo"
+        #todoList="cdkDropList"
+        [cdkDropListData]="todo"
+        [cdkDropListConnectedTo]="[doneList]"
+        (cdkDropListDropped)="drop($event)"
+        class="list">
+        <ng-container *ngIf="todo?.length !== 0; else emptyList">
+          <app-task
+            *ngFor="let task of todo"
+            [task]="task"
+            cdkDrag>
+          </app-task>
+        </ng-container>
+      </mat-card>
+    </div>
+
+    <div class="container">
+      <h2>Done</h2>
+
+      <mat-card
+        cdkDropList
+        id="done"
+        #doneList="cdkDropList"
+        [cdkDropListData]="done"
+        [cdkDropListConnectedTo]="[todoList]"
+        (cdkDropListDropped)="drop($event)"
+        class="list">
+        <ng-container *ngIf="done?.length !== 0; else emptyList">
+          <app-task
+            *ngFor="let task of done"
+            [task]="task"
+            cdkDrag>
+          </app-task>
+        </ng-container>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<ng-template #emptyList>
+</ng-template>
