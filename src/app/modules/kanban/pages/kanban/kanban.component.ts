@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {ITask} from '@data/interfaces';
-import {TasksService} from '@data/services/tasks.service';
 import {Subscription} from 'rxjs';
+import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'app-kanban',
@@ -14,7 +14,9 @@ export class KanbanComponent implements OnInit, OnDestroy {
   public done: ITask[] = [];
   private tasksSub: Subscription;
 
-  constructor(private service: TasksService) {
+  constructor(
+    private store: Store<{ tasks: ITask[] }>
+  ) {
   }
 
   public ngOnDestroy(): void {
@@ -25,13 +27,17 @@ export class KanbanComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.getTasks();
+    this.store.dispatch({ type: '[Tasks API] Load Tasks' });
   }
 
   private getTasks(): void {
-    this.tasksSub = this.service.fetchTasks()
-      .subscribe({
-        next: (res) => {
-          for (const task of res) {
+    this.tasksSub = this.store
+      .select(state => {
+        return state.tasks;
+      })
+      .subscribe(tasks => {
+        if (tasks.length > 0) {
+          for (const task of tasks) {
             if (task.completed) {
               this.done.push(task);
             } else {
@@ -51,7 +57,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    const item = event.previousContainer.data[event.previousIndex];
+    // const item = event.previousContainer.data[event.previousIndex];
     transferArrayItem<ITask>(
       event.previousContainer.data,
       event.container.data,

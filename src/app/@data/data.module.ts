@@ -4,9 +4,12 @@ import {HttpClientModule} from '@angular/common/http';
 import {TasksService} from './services/tasks.service';
 import {StoreModule} from '@ngrx/store';
 import * as fromTasks from './store/reducers/tasks.reducer';
+import {EffectsModule} from '@ngrx/effects';
+import {TasksEffects} from '@data/store/effects';
 
 const Providers = [
-  TasksService
+  TasksService,
+  TasksEffects
 ];
 
 /**
@@ -16,10 +19,12 @@ const Providers = [
 @NgModule({
   imports: [
     HttpClientModule,
+    EffectsModule.forRoot([TasksEffects]),
     StoreModule.forRoot({ tasks: fromTasks.tasksReducer })
   ],
   exports: [
-    StoreModule
+    StoreModule,
+    EffectsModule
   ]
 })
 export class DataModule {
