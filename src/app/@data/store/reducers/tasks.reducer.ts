@@ -11,6 +11,14 @@ const _storeTodoReducer = createReducer(
   on(TaskActions.load, state => ({...state})),
   on(TaskActions.loaded, (state, action) => {
     return action.tasks;
+  }),
+  on(TaskActions.searchTask, (state, action) => {
+    const regEx = new RegExp(action.query, 'gi');
+    return state.slice().filter(task => {
+      if (regEx.test(task.title)) {
+        return task;
+      }
+    });
   })
 );
 

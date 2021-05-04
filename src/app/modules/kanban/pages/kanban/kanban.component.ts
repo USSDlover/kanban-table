@@ -1,51 +1,19 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {ITask} from '@data/interfaces';
-import {Subscription} from 'rxjs';
-import {Store} from '@ngrx/store';
+import {KanbanService} from './kanban.service';
 
 @Component({
   selector: 'app-kanban',
   templateUrl: './kanban.component.html',
-  styleUrls: ['./kanban.component.scss']
+  styleUrls: ['./kanban.component.scss'],
+  providers: [KanbanService]
 })
-export class KanbanComponent implements OnInit, OnDestroy {
-  public todo: ITask[] = [];
-  public done: ITask[] = [];
-  private tasksSub: Subscription;
+export class KanbanComponent implements OnInit {
 
-  constructor(
-    private store: Store<{ tasks: ITask[] }>
-  ) {
-  }
-
-  public ngOnDestroy(): void {
-    if (this.tasksSub) {
-      this.tasksSub.unsubscribe();
-    }
-  }
+  constructor(public tasks: KanbanService) {}
 
   public ngOnInit(): void {
-    this.getTasks();
-    this.store.dispatch({ type: '[Tasks API] Load Tasks' });
-  }
-
-  private getTasks(): void {
-    this.tasksSub = this.store
-      .select(state => {
-        return state.tasks;
-      })
-      .subscribe(tasks => {
-        if (tasks.length > 0) {
-          for (const task of tasks) {
-            if (task.completed) {
-              this.done.push(task);
-            } else {
-              this.todo.push(task);
-            }
-          }
-        }
-      });
   }
 
   public drop(event: CdkDragDrop<ITask[]>): void {
@@ -57,7 +25,6 @@ export class KanbanComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    // const item = event.previousContainer.data[event.previousIndex];
     transferArrayItem<ITask>(
       event.previousContainer.data,
       event.container.data,
@@ -66,4 +33,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
     );
   }
 
+  public onSearch(ev: any, column: 'done' | 'todo'): void {
+    this.tasks.searchFor(ev.target.value, column);
+  }
 }

@@ -6,18 +6,21 @@
   <div class="container-wrapper">
     <div class="container">
       <h2>Backlog</h2>
-
+      <mat-form-field>
+        <mat-label>Search for task</mat-label>
+        <input matInput (input)="onSearch($event, 'todo')">
+      </mat-form-field>
       <mat-card
         cdkDropList
         id="todo"
         #todoList="cdkDropList"
-        [cdkDropListData]="todo"
+        [cdkDropListData]="tasks.todo$ | async"
         [cdkDropListConnectedTo]="[doneList]"
         (cdkDropListDropped)="drop($event)"
         class="list">
-        <ng-container *ngIf="todo?.length !== 0; else emptyList">
+        <ng-container *ngIf="(tasks.todo$ | async)?.length !== 0; else emptyList">
           <app-task
-            *ngFor="let task of todo"
+            *ngFor="let task of tasks.todo$ | async"
             [task]="task"
             cdkDrag>
           </app-task>
@@ -27,18 +30,21 @@
 
     <div class="container">
       <h2>Done</h2>
-
+      <mat-form-field>
+        <mat-label>Search for task</mat-label>
+        <input matInput (input)="onSearch($event, 'done')">
+      </mat-form-field>
       <mat-card
         cdkDropList
         id="done"
         #doneList="cdkDropList"
-        [cdkDropListData]="done"
+        [cdkDropListData]="tasks.done$ | async"
         [cdkDropListConnectedTo]="[todoList]"
         (cdkDropListDropped)="drop($event)"
         class="list">
-        <ng-container *ngIf="done?.length !== 0; else emptyList">
+        <ng-container *ngIf="(tasks.done$ | async)?.length !== 0; else emptyList">
           <app-task
-            *ngFor="let task of done"
+            *ngFor="let task of tasks.done$ | async"
             [task]="task"
             cdkDrag>
           </app-task>
